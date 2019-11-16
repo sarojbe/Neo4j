@@ -1,0 +1,29 @@
+CREATE (XXX :Celebrity {name:'The XXX', DOB:'01-01-1978', loc:'LA', Artist:'Method'}), 
+ (A:Person {name:'A', DOB:'01-01-1980', loc:'New York', Hobbies:['Music','Sketching']}),
+ (B:Person {name:'B', DOB:'02-02-1981', loc:'New Jersey', Hobbies:['junks','swim']}),
+ (C:Person {name:'C', DOB:'03-03-1982', loc:'New Orleans', Hobbies:['arts','skate']}),
+ (D:Person {name:'D', DOB:'04-04-1983', loc:'California', Hobbies:['junks','run']}),  
+ (E:Person {name:'E', DOB:'05-05-1984', loc:'New Mexico', Hobbies:['swim','run']})
+RETURN XXX,A,B,C,D,E
+
+
+CREATE (A)-[:FRIENDS]->(C),
+ ( A)-[:FRIENDS]->(D),
+ ( C)-[:FRIENDS]->(B),
+ ( C)-[:FOLLOWS]->(XXX),
+ ( B)-[:FRIENDS]->(A),
+ ( B)-[:FRIENDS]->(D),
+ ( B)-[:FRIENDS]->(E),
+ ( E)-[:FOLLOWS]->(XXX)
+
+
+MATCH (c:Celebrity),(p:Person) WHERE p.name = "C"  CREATE (p)-[f:FOLLOWS]->(c) RETURN c,p
+MATCH (c:Celebrity),(p:Person) WHERE p.name = "E"  CREATE (p)-[f:FOLLOWS]->(c) RETURN c,p
+
+
+MATCH (p:Person),(c:Person) WHERE p.name = "A" and c.name="C" CREATE (p)-[fr:FRIENDS]->(c) RETURN c,p
+MATCH (p:Person),(c:Person) WHERE p.name = "A" and c.name="D" CREATE (p)-[fr:FRIENDS]->(c) RETURN c,p
+MATCH (p:Person),(c:Person) WHERE p.name = "C" and c.name="B" CREATE (p)-[fr:FRIENDS]->(c) RETURN c,p
+MATCH (p:Person),(c:Person) WHERE p.name = "B" and c.name="A" CREATE (p)-[fr:FRIENDS]->(c) RETURN c,p
+MATCH (p:Person),(c:Person) WHERE p.name = "B" and c.name="D" CREATE (p)-[fr:FRIENDS]->(c) RETURN c,p
+MATCH (p:Person),(c:Person) WHERE p.name = "B" and c.name="E" CREATE (p)-[fr:FRIENDS]->(c) RETURN c,p
